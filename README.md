@@ -1,4 +1,4 @@
-# Long-Suite by EnDevSols 🚀
+# Long Suite by EnDevSols 
 
 ### The Definitive Lifecycle for Production-Grade RAG
 
