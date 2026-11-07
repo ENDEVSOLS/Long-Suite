@@ -1,673 +1,644 @@
 # Long Suite by EnDevSols
 
-**Open-source reliability infrastructure for production RAG systems and AI agents.**
+<p align="center">
+  <a href="https://github.com/ENDEVSOLS/Long-Suite"><img src="https://img.shields.io/badge/Ecosystem-Long%20Suite-blue?style=for-the-badge&logo=github" alt="Long Suite Ecosystem"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="License: MIT"></a>
+  <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/Python-3.11%20%7C%203.12-blue.svg?style=for-the-badge&logo=python" alt="Python Versions"></a>
+  <a href="https://github.com/ENDEVSOLS/Long-Suite/discussions"><img src="https://img.shields.io/badge/Community-Discussions-purple?style=for-the-badge&logo=github" alt="Discussions"></a>
+  <a href="https://endevsols.com/"><img src="https://img.shields.io/badge/Maintained%20by-EnDevSols-emerald?style=for-the-badge" alt="Maintained by EnDevSols"></a>
+</p>
 
-Long Suite is a modular collection of developer tools covering document ingestion, RAG application development, agent runtime protection, response verification, and retrieval regression testing.
+<h3 align="center">
+  Modular Reliability Infrastructure & Developer Toolchain for Production RAG and Autonomous AI Agents
+</h3>
 
-Each project is independently installable and maintained, while Long Suite provides the shared architecture, integration guidance, and community hub.
+<p align="center">
+  <strong>Long Suite</strong> is a modular, enterprise-grade ecosystem of open-source developer tools engineered to eliminate the most critical failure modes in production Retrieval-Augmented Generation (RAG) and Agentic AI systems: dirty document extraction, redundant LLM token costs, runaway agent reasoning loops, silent hallucinations, and undetected retrieval regressions.
+</p>
 
-[LongParser](https://github.com/ENDEVSOLS/LongParser) ·
-[LongTrainer](https://github.com/ENDEVSOLS/Long-Trainer) ·
-[LongGuard](https://github.com/ENDEVSOLS/LongGuard) ·
-[LongTracer](https://github.com/ENDEVSOLS/LongTracer) ·
-[LongProbe](https://github.com/ENDEVSOLS/LongProbe) ·
-[Discussions](https://github.com/ENDEVSOLS/Long-Suite/discussions)
+<p align="center">
+  <a href="#the-long-suite"><strong>Explore Suite</strong></a> ·
+  <a href="#production-ai-lifecycle"><strong>Lifecycle & Architecture</strong></a> ·
+  <a href="#quick-installation"><strong>Quick Install</strong></a> ·
+  <a href="#projects"><strong>Projects</strong></a> ·
+  <a href="#end-to-end-workflow"><strong>End-to-End Workflow</strong></a> ·
+  <a href="#which-project-should-i-use"><strong>Decision Guide</strong></a> ·
+  <a href="#framework-compatibility"><strong>Compatibility</strong></a> ·
+  <a href="https://github.com/ENDEVSOLS/Long-Suite/discussions"><strong>Discussions</strong></a>
+</p>
+
+---
+
+## ⚡ Quick Navigation
+
+| Project | Layer / Role | PyPI Package | GitHub Repository | Documentation |
+|:---|:---|:---|:---|:---|
+| **LongParser** | Document Intelligence & Ingestion | `pip install longparser` | [ENDEVSOLS/LongParser](https://github.com/ENDEVSOLS/LongParser) | [Docs](https://github.com/ENDEVSOLS/LongParser#readme) |
+| **LongTrainer** | RAG Orchestration & Multi-Tenant Assistants | `pip install longtrainer` | [ENDEVSOLS/Long-Trainer](https://github.com/ENDEVSOLS/Long-Trainer) | [Docs](https://github.com/ENDEVSOLS/Long-Trainer#readme) |
+| **LongCache** <sup>NEW</sup> | Semantic Similarity Cache (40%+ Cost Reduction) | `pip install longcache` | [ENDEVSOLS/LongCache](https://github.com/ENDEVSOLS/LongCache) | [Docs](https://endevsols.github.io/LongCache/) |
+| **LongGuard** <sup>NEW</sup> | In-Flight Agent Circuit Breaker & Loop Recovery | `pip install longguard` | [ENDEVSOLS/LongGuard](https://github.com/ENDEVSOLS/LongGuard) | [Docs](https://endevsols.github.io/LongGuard/) |
+| **LongTracer** | Claim-Level Hallucination Detection & NLI Verification | `pip install longtracer` | [ENDEVSOLS/LongTracer](https://github.com/ENDEVSOLS/LongTracer) | [Docs](https://github.com/ENDEVSOLS/LongTracer#readme) |
+| **LongProbe** | Sub-Second Retrieval Regression Testing & CI Gates | `pip install longprobe` | [ENDEVSOLS/LongProbe](https://github.com/ENDEVSOLS/LongProbe) | [Docs](https://github.com/ENDEVSOLS/LongProbe#readme) |
+| **langchain-longprobe** <sup>INTEGRATION</sup> | Official LangChain Regression Testing Integration | `pip install langchain-longprobe` | [ENDEVSOLS/langchain-longprobe](https://github.com/ENDEVSOLS/langchain-longprobe) | [Docs](https://github.com/ENDEVSOLS/langchain-longprobe#readme) |
 
 ---
 
 ## Why Long Suite?
 
-Building a production AI application involves more than connecting an LLM to a vector database.
+Moving a RAG prototype or autonomous AI agent from a Jupyter notebook to enterprise production exposes severe operational bottlenecks:
 
-Teams need to reliably:
+- **Dirty Ingestion & Fragmented Chunks**: Raw PDFs, PPTXs, and spreadsheets produce disordered chunks, broken tables, and missing headings that permanently degrade embedding quality.
+- **Runaway Token Latency & Redundant API Costs**: Semantically identical user queries repeatedly trigger expensive LLM calls, draining budgets and adding unnecessary seconds to response times.
+- **Agent Reasoning Loops & Token Overruns**: Autonomous agents easily enter infinite tool-calling loops, oscillating between repetitive prompts until hard recursion limits crash the session.
+- **Silent Hallucinations & Unverifiable Answers**: RAG systems generate plausible-sounding responses that directly contradict or lack grounding in source reference documents.
+- **Silent Retrieval Regressions**: Upgrading an embedding model, altering chunk overlap, or swapping a vector database silently degrades retrieval recall with zero warning in standard CI.
 
-- ingest and structure source documents
-- build retrieval and agent workflows
-- prevent runaway agent executions
-- verify generated claims against evidence
-- detect retrieval regressions before deployment
-- monitor how these components behave as the application evolves
-
-Long Suite separates these responsibilities into focused open-source tools that can be adopted independently or combined into one production workflow.
+**Long Suite solves these challenges systematically.** Rather than locking teams into a brittle, monolithic framework, Long Suite separates these operational concerns into focused, best-in-class open-source libraries that you can adopt individually or integrate into a complete, unified pipeline.
 
 ---
 
 ## The Long Suite
 
-| Layer | Project | Purpose |
-|---|---|---|
-| **Ingest** | [LongParser](https://github.com/ENDEVSOLS/LongParser) | Convert documents into validated, AI-ready chunks for retrieval pipelines |
-| **Build** | [LongTrainer](https://github.com/ENDEVSOLS/Long-Trainer) | Build multi-tenant RAG assistants and agent-enabled applications |
-| **Guard** | [LongGuard](https://github.com/ENDEVSOLS/LongGuard) | Detect reasoning loops, runaway executions, token spikes, and cost overruns while agents are running |
-| **Verify** | [LongTracer](https://github.com/ENDEVSOLS/LongTracer) | Verify generated claims against source documents and detect unsupported responses |
-| **Test** | [LongProbe](https://github.com/ENDEVSOLS/LongProbe) | Detect retrieval regressions with golden questions, baselines, chunk-level diffs, and CI checks |
-
-### Production AI lifecycle
-
 ```text
-Ingest → Build → Guard → Verify → Test
+       ┌──────────┐      ┌──────────┐      ┌──────────┐
+       │  Ingest  │ ───► │  Cache   │ ───► │  Build   │
+       │LongParser│      │LongCache │      │LongTrainer│
+       └──────────┘      └──────────┘      └──────────┘
+                                                 │
+                                                 ▼
+       ┌──────────┐      ┌──────────┐      ┌──────────┐
+       │   Test   │ ◄─── │  Verify  │ ◄─── │  Guard   │
+       │LongProbe │      │LongTracer│      │LongGuard │
+       └──────────┘      └──────────┘      └──────────┘
 ```
 
-The projects are designed to work together, but none of them requires the entire suite.
-
-Use only the components that solve your problem.
+| Layer | Project | Role & Purpose | Key Tech |
+|:---|:---|:---|:---|
+| **1. Ingest** | **[LongParser](https://github.com/ENDEVSOLS/LongParser)** | Transform complex PDFs, DOCX, PPTX, XLSX, and CSV into AI-ready, table-aware, semantic chunks with optional Human-in-the-Loop (HITL) review and PII redaction. | `FastAPI`, `LangGraph`, `Hybrid Chunking` |
+| **2. Cache** | **[LongCache](https://github.com/ENDEVSOLS/LongCache)** <sup>NEW</sup> | Production-grade semantic similarity cache for LLM and RAG pipelines. Intercepts paraphrased queries locally with BGE-small and FAISS, slashing repeat API costs and latency by 40%+. | `FAISS`, `BGE-small`, `SQLite`, `Redis`, `Singleflight` |
+| **3. Build** | **[LongTrainer](https://github.com/ENDEVSOLS/Long-Trainer)** | Production-ready multi-tenant RAG orchestration framework built on LangChain. Supports persistent MongoDB memory, dynamic tools, agent mode, and streaming. | `LangChain`, `LangGraph`, `FAISS`, `MongoDB` |
+| **4. Guard** | **[LongGuard](https://github.com/ENDEVSOLS/LongGuard)** <sup>NEW</sup> | In-flight runtime circuit breaker and reasoning loop recovery for LangGraph, LangChain, CrewAI, and raw client agents. Catches loops early, injects *Reflect & Pivot* prompts, and enforces budget hard caps. | `LangGraph 1.0+`, `CrewAI`, `Loop Detectors`, `Budget Caps` |
+| **5. Verify** | **[LongTracer](https://github.com/ENDEVSOLS/LongTracer)** | Claim-level hallucination detection and response verification. Breaks LLM responses into atomic assertions and verifies grounding against source context using hybrid STS + NLI. | `NLI`, `STS`, `OpenTelemetry`, `Trust Scoring` |
+| **6. Test** | **[LongProbe](https://github.com/ENDEVSOLS/LongProbe)** | Sub-second retrieval regression testing. Define golden question datasets to catch lost chunks and recall drops in CI/CD before shipping retriever or index changes. | `pytest`, `Chunk-Level Diffs`, `GitHub Actions` |
+| **Companion** | **[langchain-longprobe](https://github.com/ENDEVSOLS/langchain-longprobe)** | Official LangChain integration package for LongProbe. Enables 1-line regression tests for any LangChain retriever. | `LangChain`, `pytest-longprobe` |
 
 ---
 
-## Architecture
-
-```mermaid
-flowchart LR
-    A[Documents] --> B[LongParser]
-    B --> C[AI-Ready Chunks]
-    C --> D[Vector Store]
-
-    D --> E[LongTrainer]
-    U[User / Application] --> E
-
-    E --> F[AI Agent / RAG Execution]
-
-    F --> G[LongGuard]
-    G --> H[Protected Execution]
-
-    H --> I[Generated Response]
-    I --> J[LongTracer]
-    J --> K[Verified Response]
-
-    P[LongProbe] -. Retrieval Regression Tests .-> D
-    P -. CI Quality Gates .-> E
-```
-
-### Responsibilities
+## Production AI Lifecycle
 
 ```text
-                         LONG SUITE
+Ingest → Cache → Build → Guard → Verify → Test
+```
 
-                   Production AI System
+Every project in the Long Suite is decoupled: use one component to solve a specific bottleneck in an existing architecture, or combine them for end-to-end production reliability.
 
-                          │
-              ┌───────────┴───────────┐
-              │                       │
-        Knowledge Layer          Runtime Layer
-              │                       │
-         LongParser              LongTrainer
-              │                       │
-              └──────────┬────────────┘
-                         │
-                         ▼
-                     LongGuard
-                Runtime protection
-                         │
-                         ▼
-                    LongTracer
-                Output verification
-                         │
-                         ▼
-                     LongProbe
-                Regression testing
-                         │
-                         ▼
-                       CI/CD
+---
+
+## Architecture & Data Flow
+
+```mermaid
+flowchart TD
+    subgraph Ingestion ["1. Knowledge Ingestion Layer"]
+        Docs["Source Documents (PDF, DOCX, XLSX, PPTX)"] --> LP["LongParser (Structure & Semantic Chunking)"]
+        LP --> Chunks["AI-Ready Chunks (Table-Aware)"]
+        Chunks --> VDB[("Vector Database (FAISS, Chroma, Pinecone, Qdrant)")]
+    end
+
+    subgraph Runtime ["2. Runtime & Generation Layer"]
+        UserQuery(["User Query / Prompt"]) --> LC{"LongCache (Semantic Match?)"}
+        
+        LC -- "HIT (under 5ms)" --> CachedResp["Cached Response (Zero Token Cost)"]
+        LC -- "MISS (Bypass)" --> LT["LongTrainer (RAG Orchestration & Context)"]
+        
+        VDB -. "Retrieve Relevant Context" .-> LT
+        
+        LT --> AgentLoop["Agent / LLM Execution (LangGraph, CrewAI, OpenAI)"]
+        
+        AgentLoop <--> LG{"LongGuard (In-Flight Circuit Breaker)"}
+        LG -- "Loop / Budget Alert" --> Pivot["Auto Reflect & Pivot (Graceful Recovery)"]
+        Pivot --> AgentLoop
+        LG -- "Clean Run" --> RawResp["Generated Response"]
+    end
+
+    subgraph Verification ["3. Verification & Observability Layer"]
+        RawResp --> LTracer["LongTracer (Atomic Claim Extraction & NLI)"]
+        Chunks -. "Grounding Sources" .-> LTracer
+        LTracer --> VerifiedResp["Verified Response (Trust Score & Verdict)"]
+    end
+
+    subgraph RegressionCI ["4. Continuous Retrieval Testing (CI/CD)"]
+        Golden["Golden Questions (goldens.yaml)"] --> LProbe["LongProbe / langchain-longprobe"]
+        LProbe -. "Evaluate Recall" .-> VDB
+        LProbe --> CIPass["CI Gate: Pass / Chunk Diff Report"]
+    end
+
+    classDef primary fill:#1e293b,stroke:#3b82f6,stroke-width:2px,color:#fff;
+    classDef success fill:#14532d,stroke:#22c55e,stroke-width:2px,color:#fff;
+
+    class LP,LT,LC,LG,LTracer,LProbe primary;
+    class CachedResp,VerifiedResp,CIPass success;
+```
+
+### System Responsibilities
+
+```text
+                                 LONG SUITE
+                       Open-Source Production AI Stack
+
+                                      │
+            ┌─────────────────────────┼─────────────────────────┐
+            ▼                         ▼                         ▼
+       [Knowledge]             [Cost & Latency]           [Application]
+       LongParser                 LongCache                LongTrainer
+    (Document Parsing)        (Semantic Cache)           (RAG Assistant)
+            │                         │                         │
+            └─────────────────────────┼─────────────────────────┘
+                                      │
+                                      ▼
+                                  LongGuard
+                            (Runtime Protection)
+                                      │
+                                      ▼
+                                 LongTracer
+                            (Output Verification)
+                                      │
+                                      ▼
+                         LongProbe / langchain-longprobe
+                              (Regression Testing)
+                                      │
+                                      ▼
+                             CI/CD Quality Gate
+```
+
+---
+
+## Quick Installation
+
+Every package in the Long Suite is published on PyPI, strictly versioned, and installable independently:
+
+```bash
+# 1. Document Ingestion
+pip install longparser
+
+# 2. Multi-Tenant RAG Orchestration
+pip install longtrainer
+
+# 3. Semantic Similarity Cache (with LangChain & Redis options)
+pip install longcache
+# Optional extras: pip install "longcache[langchain]" or "longcache[redis]"
+
+# 4. Agent Circuit Breaker & Loop Recovery
+pip install longguard
+
+# 5. Hallucination Detection & Claim Verification
+pip install longtracer
+
+# 6. Retrieval Regression Testing
+pip install longprobe
+# Official LangChain integration:
+pip install langchain-longprobe
+```
+
+Or install using modern package managers like `uv`:
+```bash
+uv pip install longparser longtrainer longcache longguard longtracer longprobe langchain-longprobe
 ```
 
 ---
 
 # Projects
 
+## LongCache <sup>NEW</sup>
+### Production-Grade Semantic Similarity Cache for LLM and RAG Pipelines
+
+[![PyPI version](https://img.shields.io/pypi/v/longcache?color=blue)](https://pypi.org/project/longcache/)
+[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://endevsols.github.io/LongCache/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+> *"What is your refund policy?" costs $0.03 the first time. It should cost $0.00 every time after that.*
+
+Traditional string-matching caches fail on paraphrased user queries. **LongCache** computes local dense vector representations (using `BAAI/bge-small-en-v1.5`) and queries an in-process FAISS index to match semantically equivalent queries in under 5 milliseconds.
+
+```python
+from longcache import LongCache, RequestContext, RequestScope
+
+# Configure isolated tenant and model execution context
+context = RequestContext(
+    scope=RequestScope(tenant_id="enterprise-org", user_id="user-42"),
+    operation="rag.qa",
+    provider="openai",
+    model="gpt-4o",
+    prompt_version="v2.1",
+    corpus_version="kb-2026-q4",
+)
+cache = LongCache(context=context)
+
+@cache.cached(similarity_threshold=0.92, ttl=86400)
+def query_rag_pipeline(query: str) -> str:
+    # Your full ingestion + retrieval + LLM call
+    return my_expensive_rag_chain(query)
+
+# Call 1: MISS -> Executes full LLM pipeline (~1200ms, $0.03)
+ans1 = query_rag_pipeline("What are the cancellation terms?")
+
+# Call 2 (Paraphrase): HIT -> Served from cache (3ms, $0.00)
+ans2 = query_rag_pipeline("How do I cancel my subscription?")
+```
+
+### Key Capabilities
+- **40%+ Token Cost Reduction**: Intercepts repetitive and paraphrased queries before they touch paid LLM APIs.
+- **Offline Local Embeddings**: Bundles `BGE-small` for fast, free, local embedding generation without API network overhead.
+- **Singleflight Stampede Protection**: Coalesces concurrent identical requests into a single in-flight leader to prevent backend thundering herds.
+- **Multi-Tenant Isolation**: Cryptographic request isolation ensures cross-tenant or cross-model cache poisoning is impossible.
+- **Pluggable Backends**: Runs seamlessly on embedded SQLite, persistent Redis, or in-memory storage.
+
+### Typical Use Cases
+- High-volume customer support and FAQ chatbots
+- Enterprise search portals with frequent repeat or rephrased questions
+- Reducing third-party LLM inference bills and API rate-limit bottlenecks
+- Slashing latency from ~1200ms down to sub-5ms for warm queries
+
+**Repository:** [https://github.com/ENDEVSOLS/LongCache](https://github.com/ENDEVSOLS/LongCache)
+
+---
+
+## LongGuard <sup>NEW</sup>
+### In-Flight Circuit Breaker & Loop Recovery for Autonomous AI Agents
+
+[![PyPI version](https://img.shields.io/pypi/v/longguard.svg?color=blue)](https://pypi.org/project/longguard/)
+[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://endevsols.github.io/LongGuard/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+> *"Why did my agent just burn $15 repeating the exact same search 20 times?"*
+
+When autonomous LLM agents encounter ambiguous inputs or unexpected tool results, they frequently get trapped in reasoning loops: repeating identical tool calls, oscillating between conflicting states, or drifting aimlessly. Standard recursion limits abruptly crash execution (`GraphRecursionError`), dropping all state. **LongGuard** acts as an intelligent runtime circuit breaker that intercepts loops in-flight, injects a **"Reflect & Pivot"** prompt to self-correct the agent, and enforces hard token/cost caps.
+
+```python
+from langgraph.prebuilt import create_react_agent
+from longguard import add_guard_to_graph, GuardConfig
+
+# Initialize standard LangGraph agent
+app = create_react_agent(model, tools=my_tools)
+
+# Wrap with LongGuard in 1 line
+guarded_app = add_guard_to_graph(
+    app,
+    config=GuardConfig(
+        max_cost_dollars=2.00,        # Hard financial circuit breaker
+        max_tool_repetitions=3,       # Catch repetitive tool loops
+        action_on_trip="reflect",     # Auto-inject "Reflect & Pivot" prompt
+        verbose=True
+    )
+)
+
+# If the agent loops, LongGuard injects corrective guidance without crashing
+result = guarded_app.invoke({"messages": [("user", "Analyze Q4 revenue discrepancies")]})
+```
+
+### Key Capabilities
+- **Sub-Millisecond Monitoring**: Zero perceptible latency added to LLM step execution.
+- **4 Real-Time Loop Detectors**: Detects exact tool repetition, semantic reasoning oscillation, execution drift, and token velocity spikes.
+- **Reflect & Pivot Prompt Injection**: Automatically prompts the agent to diagnose its deadlock and select an alternative execution path.
+- **Hard Cost & Token Caps**: Prevents runaway billing by enforcing strict per-session dollar and token budgets.
+- **Turnkey Framework Integrations**: Native support for **LangGraph 1.0+**, **LangChain**, **CrewAI**, and raw OpenAI/Anthropic client loops.
+
+### Typical Use Cases
+- Autonomous coding, data analysis, and web browsing agents
+- Long-running multi-agent pipelines where an unhandled loop stalls execution
+- Setting hard financial ceilings on open-ended customer-facing agent runs
+- Safely recovering stuck agents rather than crashing user conversations
+
+**Repository:** [https://github.com/ENDEVSOLS/LongGuard](https://github.com/ENDEVSOLS/LongGuard)
+
+---
+
 ## LongParser
+### Privacy-First Document Intelligence Engine for Production RAG Pipelines
 
-**Document intelligence and ingestion for production RAG pipelines.**
+[![PyPI version](https://img.shields.io/pypi/v/longparser.svg?color=blue)](https://pypi.org/project/longparser/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-LongParser transforms PDFs, DOCX, PPTX, XLSX, CSV, and other supported documents into structured, AI-ready content.
+Garbage in, garbage out: retrieval accuracy is fundamentally bounded by document extraction quality. **LongParser** transforms complex multi-page PDFs, DOCX files, presentations, spreadsheets, and scanned documents into structured, AI-ready chunk representations with preserved table structures, layout awareness, and PII redaction.
 
-It focuses on improving the quality of the data that enters retrieval systems.
+```python
+from longparser import DocumentParser, ChunkingConfig
 
-### Key capabilities
+parser = DocumentParser(
+    chunking_config=ChunkingConfig(
+        strategy="hierarchical",      # Respect document outline & section hierarchy
+        max_chunk_size=512,
+        preserve_tables=True,         # Convert complex tables into clean Markdown/JSON
+        redact_pii=True               # Strip emails, phone numbers, and SSNs locally
+    )
+)
 
-- multi-format document extraction
-- hybrid and semantic chunking
-- heading and hierarchy-aware chunking
-- table-aware processing
-- quality validation
-- PII redaction
-- Human-in-the-Loop review
-- LangGraph HITL workflows
-- vector-store integrations
-- LangChain and LlamaIndex adapters
-- FastAPI-based processing workflows
+# Parse document with structural preservation
+parsed_doc = parser.parse("annual_financial_report.pdf")
 
-### Typical use cases
+for chunk in parsed_doc.chunks:
+    print(f"Header: {chunk.metadata.heading_path}")
+    print(f"Content: {chunk.text[:120]}...\n")
+```
 
-- preparing enterprise documents for RAG
-- building document ingestion pipelines
-- improving chunk quality before embedding
-- reviewing low-confidence extraction results
-- creating structured knowledge from complex documents
+### Key Capabilities
+- **Multi-Format Extraction**: Unified parsing for PDF, DOCX, PPTX, XLSX, and CSV.
+- **Table-Aware Semantic Chunking**: Converts financial and data tables into structured Markdown tables rather than disorganized character blobs.
+- **Human-in-the-Loop (HITL) Review**: Built-in LangGraph review workflows allow human validation of low-confidence optical extractions.
+- **Privacy & PII Protection**: Local redaction ensures sensitive customer data never leaves your infrastructure.
+- **Production FastAPI Microservice**: Ready to run as a scalable microservice in containerized environments.
 
-**Repository:**  
-https://github.com/ENDEVSOLS/LongParser
+### Typical Use Cases
+- Ingesting complex financial statements, contracts, manuals, and enterprise spreadsheets
+- Preprocessing documents before vector embedding to maximize retrieval precision
+- Automated redaction of sensitive customer and employee identifiers
+- Enterprise document pipelines requiring human review gates for low-confidence scans
+
+**Repository:** [https://github.com/ENDEVSOLS/LongParser](https://github.com/ENDEVSOLS/LongParser)
 
 ---
 
 ## LongTrainer
+### Enterprise RAG Framework for Multi-Tenant Chatbots and Autonomous Applications
 
-**Production-ready RAG framework for multi-tenant assistants and AI applications.**
+[![PyPI version](https://img.shields.io/pypi/v/longtrainer.svg?color=blue)](https://pypi.org/project/longtrainer/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-LongTrainer provides the application layer for building document-based assistants with retrieval, memory, streaming, tools, and agent workflows.
+**LongTrainer** provides the enterprise application layer for building multi-tenant RAG assistants. Built on top of LangChain, it packages isolated vector indexes, persistent MongoDB session memory, live token streaming, custom tool orchestration, and agent modes into an intuitive, production-hardened API.
 
-### Key capabilities
+```python
+from longtrainer import LongTrainer
 
-- multi-bot and multi-tenant workflows
-- persistent chat memory
-- vector retrieval
-- streaming responses
-- custom tool calling
-- LangGraph-based agent mode
-- document ingestion
-- web-search augmentation
-- vision support
-- FastAPI server
-- CLI workflows
-- optional LongTracer integration
+# Initialize multi-tenant RAG orchestrator
+trainer = LongTrainer(mongo_endpoint="mongodb://localhost:27017")
 
-### Typical use cases
+# Create an isolated bot workspace
+bot_id = trainer.initialize_bot(bot_name="LegalAdvisor")
 
-- enterprise knowledge assistants
-- document-based chatbots
-- internal support assistants
-- multi-tenant AI applications
-- RAG APIs
-- agent-enabled knowledge systems
+# Ingest knowledge documents into bot's isolated FAISS index
+trainer.add_document(bot_id=bot_id, file_path="compliance_policy.pdf")
 
-**Repository:**  
-https://github.com/ENDEVSOLS/Long-Trainer
-
----
-
-## LongGuard
-
-**In-flight circuit breaker and loop recovery for AI agents.**
-
-LongGuard monitors autonomous agent executions while they are running.
-
-Instead of waiting for a recursion limit or runaway process to fail, LongGuard detects unhealthy execution patterns early and can trigger recovery or terminate the run gracefully.
-
-### Detects
-
-- repeated tool calls
-- semantic reasoning oscillation
-- dead-end execution drift
-- abnormal token velocity
-- excessive execution steps
-- token-budget overruns
-- cost-budget overruns
-
-### Runtime actions
-
-```text
-healthy execution
-      │
-      ▼
-   continue
-
-suspicious execution
-      │
-      ▼
-Reflect & Pivot
-      │
-      ▼
- attempt recovery
-
-recovery fails
-      │
-      ▼
- graceful stop
+# Stream context-aware responses with persistent conversation memory
+for token in trainer.chat(bot_id=bot_id, session_id="user_sess_101", query="What are the disclosure rules?"):
+    print(token, end="", flush=True)
 ```
 
-### Integrations
+### Key Capabilities
+- **Multi-Tenant Bot Architecture**: Complete isolation between different organizations, bots, and user data stores.
+- **Persistent Chat Memory**: Seamless MongoDB conversation history with automatic contextual summarization.
+- **Streaming & Tool Calling**: Native WebSocket/SSE response streaming and function-calling integration.
+- **Integrated Agent Mode**: Built-in LangGraph agent workflows for multi-step reasoning over internal knowledge bases.
 
-- LangGraph
-- LangChain
-- OpenAI SDK
-- Anthropic SDK
-- custom agent loops
+### Typical Use Cases
+- Multi-tenant enterprise SaaS applications serving separate client knowledge bases
+- Production chatbots requiring persistent, stateful memory and streaming UI responses
+- Custom internal AI assistants with role-based access control and isolated vector stores
+- Autonomous knowledge agents executing tool calls against enterprise databases
 
-### Typical use cases
-
-- preventing autonomous agents from getting stuck
-- limiting runaway LLM costs
-- detecting repeated tool execution
-- applying hard token or execution budgets
-- safely recovering from reasoning loops
-- collecting per-run guard telemetry
-
-**Repository:**  
-https://github.com/ENDEVSOLS/LongGuard
+**Repository:** [https://github.com/ENDEVSOLS/Long-Trainer](https://github.com/ENDEVSOLS/Long-Trainer)
 
 ---
 
 ## LongTracer
+### Claim-Level Hallucination Detection & Verification for RAG Systems
 
-**Claim-level hallucination detection and response verification for RAG systems.**
+[![PyPI version](https://img.shields.io/pypi/v/longtracer.svg?color=blue)](https://pypi.org/project/longtracer/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-LongTracer verifies generated responses against supplied source documents.
-
-Rather than requiring a particular vector database or LLM provider, the core verification API works with response text and source context.
+LLM judges are slow, costly, and frequently hallucinate their own evaluations. **LongTracer** verifies generated responses by breaking them into atomic claims and cross-verifying each statement against retrieved context documents using hybrid Semantic Textual Similarity (STS) and Natural Language Inference (NLI).
 
 ```python
 from longtracer import check
 
+# Verify generated response against source context
 result = check(
-    response="The Eiffel Tower is located in Berlin.",
+    response="The contract requires net 30 payment terms and incurs a 5% monthly late fee.",
     sources=[
-        "The Eiffel Tower is located in Paris, France."
-    ],
+        "All invoices are payable within 30 days of receipt (Net 30). Late balances accrue interest at 1.5% per month."
+    ]
 )
 
-print(result.verdict)
-print(result.trust_score)
-print(result.hallucination_count)
+print(f"Verdict: {result.verdict}")                        # CONTRADICTION / PARTIALLY_SUPPORTED
+print(f"Trust Score: {result.trust_score:.2f}")            # e.g., 0.50
+print(f"Contradictions: {result.contradiction_count}")     # 1 (5% fee != 1.5% interest)
+for claim in result.claims:
+    print(f"Claim: '{claim.text}' -> {claim.status}")
 ```
 
-### Verification pipeline
+### Key Capabilities
+- **Atomic Claim Extraction**: Automatically decomposes complex compound sentences into verifiable assertions.
+- **Dual Verification Engine**: Combines cross-encoder NLI (Entailment / Contradiction / Neutral) with dense semantic matching.
+- **Trust Scoring Metric**: Computes a continuous `0.0 - 1.0` confidence score for every generated response.
+- **Observability & OpenTelemetry**: Exports detailed verification spans to Jaeger, Datadog, or custom dashboards.
+
+### Typical Use Cases
+- High-stakes RAG applications in healthcare, legal, finance, and technical documentation
+- Real-time hallucination prevention guardrails before displaying answers to end-users
+- Automated evaluation and benchmarking of RAG response fidelity
+- Providing continuous trust and citation scores alongside generated answers
+
+**Repository:** [https://github.com/ENDEVSOLS/LongTracer](https://github.com/ENDEVSOLS/LongTracer)
+
+---
+
+## LongProbe & langchain-longprobe
+### Sub-Second Retrieval Regression Testing & CI Quality Gates
+
+[![PyPI version](https://img.shields.io/pypi/v/longprobe.svg?color=blue)](https://pypi.org/project/longprobe/)
+[![LangChain Integration](https://img.shields.io/pypi/v/langchain-longprobe.svg?color=green&label=langchain-longprobe)](https://pypi.org/project/langchain-longprobe/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+> *"Did our latest chunking tweak or embedding model migration break retrieval for our key customers?"*
+
+**LongProbe** brings test-driven development to the RAG retrieval layer. By defining "Golden Questions" and their required chunks, LongProbe executes automated regression checks in milliseconds, generating chunk-level diffs and failing CI if retrieval accuracy drops.
+
+```yaml
+# goldens.yaml - Define retrieval expectations
+name: "customer-support-goldens"
+version: "1.0"
+questions:
+  - id: "q_refund_policy"
+    question: "What is the return window for hardware devices?"
+    match_mode: "id"
+    required_chunks:
+      - "chunk_hardware_return_30days"
+    top_k: 5
+```
+
+```python
+# test_retrieval.py - Run in pytest / CI
+from langchain_longprobe import RetrievalProbe
+from my_app import get_production_retriever
+
+def test_retrieval_quality():
+    retriever = get_production_retriever()
+    probe = RetrievalProbe.from_retriever(retriever=retriever, goldens_path="goldens.yaml")
+    
+    report = probe.run()
+    assert report.pass_rate == 1.0, f"Retrieval regressed! Lost chunks: {probe.get_missing_chunks()}"
+```
+
+### Key Capabilities
+- **Sub-Second Execution**: Evaluates dozens of golden queries without calling slow, expensive LLM evaluators.
+- **Visual Chunk-Level Diffs**: Pinpoints the exact chunks that were dropped or displaced after index modifications.
+- **Pytest & GitHub Actions Ready**: Native test runner integration to block bad retriever code before it hits production.
+- **Official LangChain Adapter (`langchain-longprobe`)**: Drop-in evaluation support for any standard `BaseRetriever`.
+
+### Typical Use Cases
+- Testing retrieval accuracy after updating embedding models or chunk sizes
+- Continuous integration gates in GitHub Actions to prevent broken retriever merges
+- Maintaining curated golden test sets for enterprise RAG benchmarks
+- Visualizing chunk retrieval drift across production vector index rebuilds
+
+**Repositories:**
+- Core Engine: [https://github.com/ENDEVSOLS/LongProbe](https://github.com/ENDEVSOLS/LongProbe)
+- LangChain Adapter: [https://github.com/ENDEVSOLS/langchain-longprobe](https://github.com/ENDEVSOLS/langchain-longprobe)
+
+---
+
+## End-to-End Workflow: The Unified Pipeline
+
+Here is how all components seamlessly combine to deliver an enterprise-grade, high-reliability AI application:
+
+```python
+# ==============================================================================
+# Complete Production RAG Pipeline Powered by Long Suite
+# ==============================================================================
+
+# 1. INGESTION (LongParser)
+from longparser import DocumentParser
+parser = DocumentParser(preserve_tables=True)
+chunks = parser.parse("enterprise_knowledge.pdf").chunks
+
+# 2. CACHING (LongCache)
+from longcache import LongCache, RequestContext, RequestScope
+context = RequestContext(
+    scope=RequestScope(tenant_id="tenant-acme", user_id="user-01"),
+    operation="support.qa",
+    model="gpt-4o",
+)
+cache = LongCache(context=context)
+
+# 3. RUNTIME & ORCHESTRATION (LongTrainer + LongGuard)
+from longtrainer import LongTrainer
+from longguard import add_guard_to_graph, GuardConfig
+
+trainer = LongTrainer()
+bot_id = trainer.initialize_bot(bot_name="EnterpriseAssistant")
+
+# Decorate retrieval execution with LongCache
+@cache.cached(similarity_threshold=0.92, ttl=3600)
+def execute_safe_query(user_query: str) -> str:
+    # Protect agent runtime with LongGuard
+    guarded_agent = add_guard_to_graph(
+        trainer.get_agent(bot_id),
+        config=GuardConfig(max_cost_dollars=1.50, action_on_trip="reflect")
+    )
+    raw_answer, source_chunks = guarded_agent.invoke_with_sources(user_query)
+    
+    # 4. VERIFICATION (LongTracer)
+    from longtracer import check
+    verification = check(response=raw_answer, sources=source_chunks)
+    
+    if verification.verdict == "CONTRADICTION":
+        return "I apologize, but the retrieved information could not reliably substantiate this answer."
+    
+    return raw_answer
+
+# 5. REGRESSION CI (LongProbe)
+# In your CI pipeline: pytest tests/test_retrieval.py (using LongProbe or langchain-longprobe)
+```
+
+---
+
+## Use the Projects Independently
+
+Long Suite is completely modular. You do **not** need to adopt the entire suite to gain immediate production value. Adopt only the component that targets your current production pain point:
 
 ```text
-Generated Response
-       │
-       ▼
- Claim Splitting
-       │
-       ▼
-Semantic Matching
-       │
-       ▼
-NLI Verification
-       │
-       ▼
-Trust Score + Verdict
-```
-
-### Key capabilities
-
-- claim-level verification
-- contradiction detection
-- unsupported-claim detection
-- trust scoring
-- batch verification
-- LangChain integration
-- LlamaIndex integration
-- trace collection
-- pluggable trace storage
-- OpenTelemetry export
-- local dashboards and observability workflows
-
-### Typical use cases
-
-- verifying RAG answers
-- detecting unsupported claims
-- evaluating source grounding
-- monitoring response quality
-- adding trust signals to production AI systems
-
-**Repository:**  
-https://github.com/ENDEVSOLS/LongTracer
-
----
-
-## LongProbe
-
-**Fast retrieval regression testing for RAG pipelines.**
-
-LongProbe answers a simple question:
-
-> **Did my latest change break retrieval?**
-
-Define golden questions and expected evidence, run LongProbe after changes, and detect which document chunks were lost or gained.
-
-Think of it as regression testing for the retrieval layer of your RAG application.
-
-### Example workflow
-
-```text
-Golden Questions
-       │
-       ▼
-Current Retriever
-       │
-       ▼
-Retrieved Chunks
-       │
-       ▼
-Compare with Baseline
-       │
-       ├── unchanged
-       ├── improved
-       └── regression
-                 │
-                 ▼
-              Fail CI
-```
-
-### Key capabilities
-
-- golden question test sets
-- required chunk validation
-- recall scoring
-- exact chunk-level diffs
-- baseline comparisons
-- regression detection
-- pytest integration
-- GitHub Actions output
-- watch mode
-- LangChain adapters
-- LlamaIndex adapters
-- Chroma integration
-- Pinecone integration
-- Qdrant integration
-- HTTP retriever adapter
-
-### Typical use cases
-
-- testing retrieval after changing chunking
-- testing embedding upgrades
-- validating vector-index migrations
-- catching retrieval regressions in pull requests
-- maintaining golden datasets
-- protecting critical RAG queries
-
-**Repository:**  
-https://github.com/ENDEVSOLS/LongProbe
-
----
-
-# How the Tools Work Together
-
-A complete workflow can look like this:
-
-### 1. Prepare knowledge
-
-Use **LongParser** to extract, validate, review, and chunk source documents.
-
-```text
-Documents
-   ↓
-LongParser
-   ↓
-AI-ready chunks
-```
-
-### 2. Build the application
-
-Index those chunks and use **LongTrainer** to build the RAG assistant or agent application.
-
-```text
-AI-ready chunks
-   ↓
-Vector Store
-   ↓
-LongTrainer
-   ↓
-RAG / Agent
-```
-
-### 3. Protect runtime execution
-
-Use **LongGuard** around agent execution to detect loops, abnormal behavior, and budget overruns.
-
-```text
-Agent
-   ↓
-LongGuard
-   ↓
-Protected execution
-```
-
-### 4. Verify generated answers
-
-Pass generated responses and their supporting sources through **LongTracer**.
-
-```text
-Response + Sources
-        ↓
-    LongTracer
-        ↓
-Verified Response
-```
-
-### 5. Protect against regressions
-
-Use **LongProbe** in development and CI/CD to make sure retrieval quality does not silently degrade.
-
-```text
-Code / Index Change
-        ↓
-    LongProbe
-        ↓
-Pass / Regression
-        ↓
-       CI
+Existing LangGraph Agent        + LongGuard   --> Zero reasoning loops & budget overruns
+Existing Pinecone / Chroma RAG  + LongCache   --> 40%+ token cost savings & sub-5ms answers
+Existing Enterprise Pipeline    + LongTracer  --> Real-time hallucination prevention
+Existing Production Retriever   + LongProbe   --> Sub-second CI regression testing
+Raw PDF / Document Ingestion    + LongParser  --> Clean, table-aware chunk preparation
+Multi-Tenant SaaS Bot Need      + LongTrainer --> Turnkey isolated assistants with memory
 ```
 
 ---
 
-# Use the Projects Independently
+## Which Project Should I Use?
 
-Long Suite is modular.
-
-You do **not** need LongTrainer to use LongProbe.
-
-You do **not** need LongParser to use LongTracer.
-
-You do **not** need LangGraph to use LongGuard.
-
-Examples:
-
-```text
-Existing RAG application + LongTracer
-Existing Pinecone pipeline + LongProbe
-Existing LangGraph agent + LongGuard
-Existing ingestion system + LongTrainer
-Custom application + LongParser
-```
-
-Use the smallest part of the suite that solves your problem.
+| Engineering Need / Failure Mode | Recommended Tool | Why It Solves It |
+|:---|:---|:---|
+| Complex PDFs, DOCX, or tables losing structure during chunking | **LongParser** | Hierarchy-aware extraction with table preservation & PII redaction |
+| High LLM API bills caused by repeated or paraphrased user queries | **LongCache** | Local BGE-small semantic similarity cache with sub-5ms FAISS lookup |
+| Building multi-tenant RAG assistants with persistent memory & streaming | **LongTrainer** | Turnkey RAG framework built on LangChain with isolated MongoDB memory |
+| AI agent stuck in tool-calling loops, oscillating, or exceeding budget | **LongGuard** | In-flight runtime circuit breaker with auto Reflect & Pivot prompt injection |
+| Model generating hallucinated claims or contradicting retrieved sources | **LongTracer** | Claim-level NLI verification and continuous response trust scoring |
+| Retriever silently dropping vital document chunks after code or index changes | **LongProbe** | Sub-second CI regression testing with golden datasets and chunk-level diffing |
+| LangChain retriever regression testing in pytest | **langchain-longprobe** | 1-line integration for any LangChain `BaseRetriever` |
 
 ---
 
-# Which Project Should I Use?
+## Long Suite Reliability Matrix
 
-| I need to... | Use |
-|---|---|
-| Parse PDFs, DOCX, PPTX, XLSX, or CSV | **LongParser** |
-| Generate AI-ready document chunks | **LongParser** |
-| Add HITL document review | **LongParser** |
-| Build a document chatbot | **LongTrainer** |
-| Build a multi-tenant RAG API | **LongTrainer** |
-| Add memory, streaming, or tools | **LongTrainer** |
-| Detect an agent stuck in a loop | **LongGuard** |
-| Stop runaway token usage | **LongGuard** |
-| Set a hard agent cost budget | **LongGuard** |
-| Recover a stuck agent before terminating it | **LongGuard** |
-| Check whether an answer is supported by sources | **LongTracer** |
-| Detect hallucinated or contradicted claims | **LongTracer** |
-| Add response trust scoring | **LongTracer** |
-| Test whether retrieval changed | **LongProbe** |
-| Detect lost chunks after an update | **LongProbe** |
-| Add RAG retrieval tests to CI/CD | **LongProbe** |
+| Failure Mode | Production Impact | Long Suite Solution | Mitigation Mechanism |
+|:---|:---|:---|:---|
+| **Disordered Ingestion** | Incoherent embeddings, broken tabular data | **LongParser** | Structural heading trees, Markdown table conversion |
+| **Cache Stampedes / Query Duplication** | Thousands in wasted LLM fees, slow response times | **LongCache** | Local BGE-small embeddings, singleflight concurrency locks |
+| **State & Memory Bleed** | Cross-tenant data leakage in enterprise bots | **LongTrainer** | Strictly scoped tenant workspaces and isolated vector indexes |
+| **Agent Reasoning Loops** | Frozen chat interfaces, astronomical token bills | **LongGuard** | Semantic oscillation detection, Reflect & Pivot injection, budget caps |
+| **Hallucinated Statements** | Compliance risks, customer mistrust | **LongTracer** | Atomic claim decomposition, hybrid STS + NLI source verification |
+| **Silent Retrieval Regressions** | Production degradation after index updates | **LongProbe** | Deterministic recall testing in CI with golden chunk assertion |
 
 ---
 
-# Long Suite Reliability Model
+## Framework Compatibility
 
-Long Suite approaches production AI reliability at multiple stages.
+The Long Suite tools are engineered to be modular and framework-agnostic, integrating out-of-the-box with modern AI stacks:
 
-| Failure | Long Suite component |
-|---|---|
-| Poor document extraction | LongParser |
-| Bad chunk preparation | LongParser |
-| Application orchestration complexity | LongTrainer |
-| Agent reasoning loop | LongGuard |
-| Repeated tool execution | LongGuard |
-| Token or cost runaway | LongGuard |
-| Unsupported generated claim | LongTracer |
-| Contradiction with source evidence | LongTracer |
-| Retrieval quality regression | LongProbe |
-| Missing expected evidence | LongProbe |
-
-The goal is not to create one large framework.
-
-The goal is to provide focused tools around common production AI failure modes.
+- **Orchestration Frameworks**: [LangChain](https://github.com/langchain-ai/langchain), [LangGraph](https://github.com/langchain-ai/langgraph), [LlamaIndex](https://github.com/run-llama/llama_index), [CrewAI](https://github.com/crewAIInc/crewAI)
+- **Model Providers**: [OpenAI](https://platform.openai.com/), [Anthropic](https://www.anthropic.com/), [Google Gemini](https://ai.google.dev/), [Hugging Face](https://huggingface.co/)
+- **Vector Stores & Indexes**: [FAISS](https://github.com/facebookresearch/faiss), [ChromaDB](https://www.trychroma.com/), [Pinecone](https://www.pinecone.io/), [Qdrant](https://qdrant.tech/), [Milvus](https://milvus.io/)
+- **Caches & Databases**: [SQLite](https://sqlite.org/), [Redis](https://redis.io/), [MongoDB](https://www.mongodb.com/)
+- **Observability & Testing**: [OpenTelemetry](https://opentelemetry.io/), [pytest](https://docs.pytest.org/), [FastAPI](https://fastapi.tiangolo.com/)
 
 ---
 
-# Ecosystem Principles
+## Community & Discussions
 
-## Modular
+Long Suite is maintained openly, and we encourage architectural contributions, feature requests, and community discussions:
 
-Every Long project is independently installable and versioned.
-
-Use one component or combine several.
-
-## Framework-friendly
-
-The Long Suite is designed to complement existing AI frameworks rather than replace them.
-
-Projects include integrations with technologies such as:
-
-- LangChain
-- LangGraph
-- LlamaIndex
-- OpenAI
-- Anthropic
-- vector databases
-- OpenTelemetry-compatible infrastructure
-
-Integration support varies by project.
-
-## Production-oriented
-
-The projects focus on problems that typically appear after an AI prototype begins moving toward production:
-
-- document quality
-- tenant isolation
-- persistent state
-- runaway execution
-- hallucinations
-- observability
-- regression testing
-- CI/CD reliability
-
-## Open source
-
-The Long Suite is developed in public and welcomes bug reports, discussions, feature proposals, integrations, documentation improvements, and code contributions.
+- **Ecosystem Discussions & Roadmap**: [Long-Suite Discussions](https://github.com/ENDEVSOLS/Long-Suite/discussions)
+- **Issue Trackers**:
+  - [LongParser Issues](https://github.com/ENDEVSOLS/LongParser/issues)
+  - [LongTrainer Issues](https://github.com/ENDEVSOLS/Long-Trainer/issues)
+  - [LongCache Issues](https://github.com/ENDEVSOLS/LongCache/issues)
+  - [LongGuard Issues](https://github.com/ENDEVSOLS/LongGuard/issues)
+  - [LongTracer Issues](https://github.com/ENDEVSOLS/LongTracer/issues)
+  - [LongProbe Issues](https://github.com/ENDEVSOLS/LongProbe/issues)
+  - [langchain-longprobe Issues](https://github.com/ENDEVSOLS/langchain-longprobe/issues)
 
 ---
 
-# Community
+## Contributing
 
-For ecosystem-wide questions, architecture discussions, integration ideas, and roadmap proposals, use:
-
-**Long Suite Discussions**
-
-https://github.com/ENDEVSOLS/Long-Suite/discussions
-
-For bugs and package-specific feature requests, use the relevant project repository.
-
-| Project | Issues |
-|---|---|
-| LongParser | https://github.com/ENDEVSOLS/LongParser/issues |
-| LongTrainer | https://github.com/ENDEVSOLS/Long-Trainer/issues |
-| LongGuard | https://github.com/ENDEVSOLS/LongGuard/issues |
-| LongTracer | https://github.com/ENDEVSOLS/LongTracer/issues |
-| LongProbe | https://github.com/ENDEVSOLS/LongProbe/issues |
+We welcome community contributions across the entire ecosystem. If you are submitting:
+- Cross-project examples, tutorials, or architecture guides: please contribute directly to this [Long-Suite](https://github.com/ENDEVSOLS/Long-Suite) repository.
+- Core feature enhancements, bug fixes, or framework adapters: please submit a pull request directly to the individual project's repository.
 
 ---
 
-# Contributing
+## About EnDevSols
 
-Contributions are welcome across the Long Suite ecosystem.
+Long Suite is proudly developed and maintained by **[EnDevSols](https://endevsols.com/)**.
 
-Good contributions to this central repository include:
+We specialize in production-grade AI systems, generative AI infrastructure, autonomous agent orchestration, and enterprise software engineering.
 
-- cross-project examples
-- architecture documentation
-- integration guides
-- tutorials
-- project comparisons
-- documentation corrections
-- ecosystem roadmap discussions
-- deployment examples
-
-For implementation changes that affect only one package, contribute directly to that project's repository.
-
-| Project | Repository |
-|---|---|
-| LongParser | https://github.com/ENDEVSOLS/LongParser |
-| LongTrainer | https://github.com/ENDEVSOLS/Long-Trainer |
-| LongGuard | https://github.com/ENDEVSOLS/LongGuard |
-| LongTracer | https://github.com/ENDEVSOLS/LongTracer |
-| LongProbe | https://github.com/ENDEVSOLS/LongProbe |
+- **Website**: [https://endevsols.com/](https://endevsols.com/)
+- **GitHub**: [https://github.com/ENDEVSOLS](https://github.com/ENDEVSOLS)
 
 ---
 
-# Ecosystem Roadmap
+## License
 
-Long Suite development is moving toward tighter interoperability between the individual projects.
-
-Current ecosystem priorities include:
-
-- improving cross-project integration
-- standardizing observability and telemetry
-- making production failures easier to reproduce as regression tests
-- expanding framework adapters
-- improving CI/CD workflows
-- creating complete end-to-end reference applications
-- improving documentation and examples
-- strengthening reliability tooling for autonomous AI agents
-
-Major features remain implemented and released through their respective project repositories.
-
-Ecosystem-level proposals belong in:
-
-https://github.com/ENDEVSOLS/Long-Suite/discussions
-
----
-
-# Repository Scope
-
-This repository is the **central architecture, documentation, examples, and community hub** for Long Suite.
-
-It exists to:
-
-- explain how Long Suite projects fit together
-- maintain ecosystem-wide architecture documentation
-- provide cross-project examples
-- coordinate integration guidance
-- centralize ecosystem discussions
-- document the overall Long Suite direction
-
-Individual packages remain independently maintained and independently versioned.
-
----
-
-# Maintained by EnDevSols
-
-Long Suite is maintained by **EnDevSols**.
-
-We build production AI systems, developer infrastructure, automation platforms, and custom software.
-
-Website:
-
-https://endevsols.com/
-
-GitHub:
-
-https://github.com/ENDEVSOLS
-
----
-
-# License
-
-This Long Suite hub repository is released under the **MIT License**.
-
-Individual Long Suite projects may contain their own licensing or third-party dependency requirements. Check each repository before deployment.
+This Long Suite hub repository is open-sourced under the **[MIT License](LICENSE)**. Individual projects within the Long Suite ecosystem are released under their respective open-source licenses (MIT or Apache 2.0).
